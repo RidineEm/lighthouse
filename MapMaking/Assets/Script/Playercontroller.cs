@@ -53,5 +53,6 @@ public class Playercontroller : MonoBehaviour
         float yspeed = y * 8f;
         Vector3 velo = new Vector3(xspeed, yspeed, 0f);
         playerRigidbody.velocity = velo;
+        
     }
 }
