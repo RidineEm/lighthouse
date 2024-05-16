@@ -5,12 +5,12 @@ using UnityEngine;
 public class StartingPostion : MonoBehaviour
 {
     public string startPoint; // 이동되어온 맵이름을 체크하기 위한 변수
-    private Playercontroller thePlayer; // 캐릭터 객체 가져오기 위한 변수
+    private PlayerController thePlayer; // 캐릭터 객체 가져오기 위한 변수
   
     // Start is called before the first frame update
     void Start()
     {
-        thePlayer = FindObjectOfType<Playercontroller>(); // 캐릭터 변수에 현재 캐릭터 객체를 할당
+        thePlayer = FindObjectOfType<PlayerController>(); // 캐릭터 변수에 현재 캐릭터 객체를 할당
         if (startPoint == thePlayer.currentMapName)
         {
 

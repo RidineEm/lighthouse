@@ -10,7 +10,7 @@ public class MoveMap : MonoBehaviour
     public string transferMapName; //이동할 맵이름       
     
     private bool isclear;  //클리어 확인용
-    private Playercontroller thePlayer; 
+    private PlayerController thePlayer; 
     private Camera theCamera;
     private GameObject cameraTarget;// 맵이동 카메라 타겟 설정
     private GameObject target; // 맵이동 플레이어 타겟 설정
@@ -18,7 +18,7 @@ public class MoveMap : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        thePlayer = FindObjectOfType<Playercontroller>();//플레이어 객체 가져옴
+        thePlayer = FindObjectOfType<PlayerController>();//플레이어 객체 가져옴
         theCamera = FindObjectOfType<Camera>();//카메라 가져옴
         
     }
