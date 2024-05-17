@@ -1,0 +1,23 @@
+Main Scene
+ 게임 실행 시 나오는 화면입니다.
+New Game, Continue 클릭 시 Base Scene 으로 이동
+Option 클릭 시 설정 창이 나오며 해상도와 창 모드 설정가능
+Exit Game 게임 종료
+
+Base Scene
+ 게임 시작 전 마을 화면입니다. 등대 1층 안전구역이라는 컨셉에 맞게 Base로 만들어 봤습니다.
+중앙 문을 클릭하면 던전 진입 (SelectStage Scene으로 이동, 마우스 커서 올릴 시 깜빡이게 설정할 예정)
+Shop, Upgrade, Skill 미구현
+
+Select Scene
+ 스테이지를 선택하는 화면입니다.
+랜덤 배치 및 버튼 기능처리 미구현, 현재 아무 버튼이나 누르면 Minimap Scene으로 이동
+
+Minimap Scene
+ 던전 내 캐릭터 UI를 보여주는 화면입니다.
+UI Canvas - Player Stats - Player HP 에서 Hp State 컴포넌트의 Cur Hp를 조절해주면 상단 Hp 바 줄어듬 (UI의 Slider 사용)
+Main Camera를 Player의 자식으로 두어 카메라가 플레이어를 따라다니게 만들고 Minimap Camera는 맵 전체를 표시하게 설정했습니다.
+(두 카메라 모두 Projection을 Othographic으로 설정)
+  Minimap Camera
+  - Camera 컴포넌트의 Viewport Rect 값으로 위치를 설정한 것이므로 변경 X
+  - Culling Mask 옵션은 사용하지 않아서 무시해도 됩니다.
