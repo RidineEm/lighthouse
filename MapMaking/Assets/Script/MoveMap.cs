@@ -39,7 +39,7 @@ public class MoveMap : MonoBehaviour
             theCamera.transform.position = new Vector3(cameraTarget.transform.position.x, cameraTarget.transform.position.y, theCamera.transform.position.z);//카메라 이동
             if (transferMapName == "bossmap")
             {
-                theCamera.orthographicSize=12;
+                theCamera.orthographicSize = 15; // 이 부분 12에서 15로 높이면 미니맵 카메라 SIZE 바뀌는데 15정도가 딱 맞음
             }
             thePlayer.transform.position = target.transform.position;//가져온 스폰위치에다 캐릭터 이동
 
