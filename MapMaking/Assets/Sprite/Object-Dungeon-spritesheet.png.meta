@@ -282,7 +282,7 @@ TextureImporter:
       213: 21300184
     second: Wall-bottom-corner-in
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 11
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -303,7 +303,6 @@ TextureImporter:
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -342,7 +341,6 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 1
-  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -1189,8 +1187,8 @@ TextureImporter:
         y: 470
         width: 122
         height: 178
-      alignment: 9
-      pivot: {x: 0.5647698, y: 0.11103427}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -1900,7 +1898,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 120
-        y: 300
+        y: 299
         width: 60
         height: 60
       alignment: 0
@@ -2253,48 +2251,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Object-Dungeon-spritesheet_0
-      rect:
-        serializedVersion: 2
-        x: 63
-        y: 576
-        width: 120
-        height: 39
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 1e9b0db2375403a4cbfee84b125c750b
-      internalID: 25094995
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Object-Dungeon-spritesheet_1
-      rect:
-        serializedVersion: 2
-        x: 51
-        y: 495
-        width: 116
-        height: 35
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 55aebfd63a2b4e3438bc6fb72765610b
-      internalID: -296003769
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Base-wall-side2
       rect:
         serializedVersion: 2
@@ -2388,102 +2344,6 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable:
-      Base-wall-middle1: -465073938
-      Base-wall-middle2: -865369012
-      Base-wall-middle3: -175568517
-      Base-wall-side1: -436649550
-      Base-wall-side2: -1556627722
-      Base-wall-side3: -261123544
-      Bones: 21300014
-      Brick: 21300010
-      Brick-note: 21300120
-      Cell-door-iron: 21300108
-      Cell-door-wood: 21300060
-      Chandelier1: 21300062
-      Chandelier2: 21300064
-      Chandelier3: 21300068
-      Chandelier4: 21300180
-      Coffin: 21300090
-      Coffin-loot1: 21300106
-      Coffin-loot2: 21300118
-      Coffin-loot3: 21300122
-      Coffin-loot4: 21300124
-      Coffin-loot5: 21300036
-      Column: 21300056
-      Column-broken: 21300034
-      Column-catacomb: 21300026
-      Column-wall: 21300114
-      Flag: 21300116
-      Flag-old: 21300158
-      Floor-lift: 21300164
-      Floor1: 21300178
-      Floor10: 21300166
-      Floor2: 21300168
-      Floor3: 21300176
-      Floor4: 21300160
-      Floor5: 21300174
-      Floor6: 21300170
-      Floor7: 21300162
-      Floor8: 21300172
-      Floor9: 21300112
-      Frame: 21300132
-      Gate1: 21300134
-      Gate2: 21300136
-      Gate3: 21300058
-      Gold: 21300070
-      Guillotine-blade: 21300028
-      Guillotine-body: 21300018
-      Guillotine-handle: 21300020
-      Guillotine-robe: 21300082
-      Hole: 21300130
-      Jail-door-middle: 21300128
-      Jail-door-side: 21300126
-      Land-pit: 21300012
-      Object-Dungeon-spritesheet_0: 574207217
-      Object-Dungeon-spritesheet_1: 218272770
-      Paper-note1: 21300030
-      Paper-note2: 21300004
-      Pit-camp: 21300092
-      Prison-bed-front: 21300080
-      Prison-bed-side: 21300072
-      Prison-chain: 21300084
-      Prisoner1: 21300104
-      Prisoner2: 21300086
-      Prisoner3: 21300016
-      Rib: 21300032
-      Ripped-note: 21300074
-      Rite-circle: 21300040
-      Ruin: 21300078
-      Saint-statue: 21300024
-      Skull: 21300156
-      Stairs: 21300094
-      Stairs-down: 21300076
-      Statue-base: 21300000
-      Substance1: 21300002
-      Substance2: 21300038
-      Substance3: 21300042
-      Substance4: 21300044
-      Tomb-stone1: 21300046
-      Tomb-stone2: 21300048
-      Torture-cage1: 21300050
-      Torture-cage2: 21300052
-      Torture-cage3: 21300054
-      Torture-cage4: 21300006
-      Torture-device1: 21300008
-      Torture-device2: 21300140
-      Wall-bottom: 21300184
-      Wall-bottom-corner-in: 21300088
-      Wall-bottom-corner-out: 21300182
-      Wall-side: 21300148
-      Wall-top: 21300142
-      Wall-top-corner-in: 21300150
-      Wall-top-corner-out: 21300110
-      Well: 21300096
-      Window1: 21300098
-      Window2: 21300100
-      Window3: 21300102
-      Window4: 716892365
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
