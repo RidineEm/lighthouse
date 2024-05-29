@@ -13,8 +13,6 @@ public class StartingPostion : MonoBehaviour
         thePlayer = FindObjectOfType<PlayerController>(); // 캐릭터 변수에 현재 캐릭터 객체를 할당
         if (startPoint == thePlayer.currentMapName&&startPoint!="")//뒤쪽 조건은 맵 다만들면 지울것
         {
-
-            
             // 캐릭터 이동
             thePlayer.transform.position = this.transform.position;
         }

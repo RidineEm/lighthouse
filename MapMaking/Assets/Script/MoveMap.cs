@@ -41,9 +41,13 @@ public class MoveMap : MonoBehaviour
             {
                 theCamera.orthographicSize = 15; // 이 부분 12에서 15로 높이면 미니맵 카메라 SIZE 바뀌는데 15정도가 딱 맞음
             }
-            else if (GameObject.Find(transferMapName).tag == "vertical_room")
+            else if (GameObject.Find(transferMapName).tag == "vertical_room")//세로방
             {
                 theCamera.orthographicSize = 12;
+            }
+            else if (GameObject.Find(transferMapName).tag == "horizontal_room")//가로방
+            {
+                theCamera.orthographicSize = 10;
             }
             thePlayer.transform.position = target.transform.position;//가져온 스폰위치에다 캐릭터 이동
 
