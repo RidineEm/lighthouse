@@ -6,14 +6,12 @@ public class HealItem : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        // 충돌한 객체가 플레이어인지 확인
-        PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
-        PlayerController playercontroller = other.GetComponent<PlayerController>();
-        if (other.tag == "Player")
+        PlayerController playerController = other.GetComponent<PlayerController>();
+        if (playerController != null)
         {
-            // 플레이어의 체력을 회복시키고 힐 아이템을 파괴
-            playerHealth.Heal(healAmount);
-            Destroy(gameObject);
+            // 플레이어의 인벤토리에 힐 아이템을 추가
+            playerController.healItemCount++;
+            Destroy(gameObject); // 아이템을 파괴
         }
     }
 }

@@ -7,13 +7,12 @@ public class SpeedBoostItem : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        // 충돌한 객체가 플레이어인지 확인
         PlayerController playerController = other.GetComponent<PlayerController>();
         if (playerController != null)
         {
-            // 플레이어의 속도를 증가시키고 아이템을 비활성화
-            playerController.StartCoroutine(playerController.SpeedBoost(speedMultiplier, duration));
-            gameObject.SetActive(false);
+            // 플레이어의 인벤토리에 속도 증가 아이템을 추가
+            playerController.speedBoostItemCount++;
+            Destroy(gameObject); // 아이템을 파괴
         }
     }
 }

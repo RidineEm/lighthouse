@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerHealth : MonoBehaviour
+public class PlayerHealth :MonoBehaviour
 {
     public int maxHealth = 100; // 플레이어의 최대 체력
     public int currentHealth;   // 플레이어의 현재 체력

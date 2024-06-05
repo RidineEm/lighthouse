@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Skill4 : MonoBehaviour
+public class Skill4 : LivingEntity
 {
     public float speed = 10f;
     public float lifespan = 0.9f;
     Vector2 direction; // 총알의 방향
     private Rigidbody2D bulletRigidbody;
     private bool speedChanged = false;
+    public float skillDamage = 20f; // 스킬의 데미지
 
     void Awake()
     {
@@ -38,31 +39,27 @@ public class Skill4 : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    void OnTriggerEnter2D(Collider2D other)
     {
-        //충돌한 상대방이 적이라면     
-        if (other.tag == "Enemy")
-        {
-            //Monster의 Die()를 호출하기 위해
-            //monster 오브젝트의 MonsterController스크립트 정보 얻어옴
-
-            // MonsterController monsterController = other.GetComponent<MonsterController>();
-            // 당장 스크립트가 없기에 일단 주석처리
-
-            // if (monsterController != null)
-            // {
-            //  obj.GetComponent<hpbar>().Damage();  ---> 이때 스킬의 데미지는 if 기본공격 damage가 10일시 스킬은 그의 2배인 20으로 설정하기
-
-            //파괴
-            //Destroy(gameObject);
-            //  }
-        }
 
         //충돌한 것이 벽이라면
         if (other.tag == "Wall")
         {
             //파괴
             Destroy(gameObject);
+        }
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        // 충돌한 상대방이 적이라면
+        if (collision.gameObject.tag == "Enemy")
+        {
+            // IDamageable 컴포넌트를 가진 적을 찾음
+            IDamageable damageable = collision.gameObject.GetComponent<IDamageable>();
+
+            // 적에게 데미지를 입히는 함수 호출
+            damageable?.OnDamage(skillDamage);
         }
     }
 }
