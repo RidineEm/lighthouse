@@ -1,55 +1,57 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static System.Net.WebRequestMethods;
-using UnityEngine.UIElements;
-using static UnityEngine.GraphicsBuffer;
-using UnityEditor.Experimental.GraphView;
 
-public class ShortEnemy : LivingEntity
+public class RangedEnemy : LivingEntity
 {
     public Rigidbody2D target;
+    public GameObject DamageText;
+    public Transform textpro;
+    public GameObject HpSilder;
 
     Rigidbody2D rigid;
     Collider2D Collider2D;
     SpriteRenderer spriter;
     Animator EnemyAnimator;
     WaitForFixedUpdate wait;
+    public GameObject FlyprojectilePrefab;
 
     bool isAttack = false;
     bool isMoving = false;
 
     public LayerMask playerLayers;
+    public float Maxhealth;
     public float AttackDamage;
     public float Speed;
     public float attackDelay;
     public float attackCooldown;
     public float targetingRange;
     public float attackRange;
-    public float Maxhealth;
-     public void Setup(FrogData frogData)
+    public void Setup(FlyData flyData)
     {
-        Maxhealth = frogData.Maxhealth;
-        health = frogData.Maxhealth;
-        Armour = frogData.Armour;
-        AttackDamage = frogData.AttackDamage;
-        Speed = frogData.Speed;
-        attackDelay = frogData.attackDelay;
-        attackCooldown = frogData.attackCooldown;
-        targetingRange = frogData.targetingRange;
+        Maxhealth = flyData.Maxhealth;
+        Armour = flyData.Armour;
+        AttackDamage = flyData.AttackDamage;
+        Speed = flyData.Speed;
+        attackDelay = flyData.attackDelay;
+        attackCooldown = flyData.attackCooldown;
+        targetingRange = flyData.targetingRange;
+        attackRange = flyData.attackRange;
     }
     void Start()
     {
+        GameObject player = GameObject.Find("Player");
+        if (player != null)
+        {
+            target = player.GetComponent<Rigidbody2D>();
+        }
         rigid = GetComponent<Rigidbody2D>();
         Collider2D = GetComponent<Collider2D>();
         spriter = GetComponent<SpriteRenderer>();
         EnemyAnimator = GetComponent<Animator>();
         wait = new WaitForFixedUpdate();
-        Vector2 attackSize = new Vector2(0.9f, 0.3f);
-        attackRange = Vector2.SqrMagnitude(attackSize);
+        health = Maxhealth;
     }
-   
-
     void FixedUpdate()
     {
         if (dead || EnemyAnimator.GetCurrentAnimatorStateInfo(0).IsName("Hit"))
@@ -57,7 +59,7 @@ public class ShortEnemy : LivingEntity
             StopMoving();
             return;
         }
-        float dis = Vector2.Distance(transform.position, target.position);  //내 위치와 타켓의 거리를 계산함
+        float dis = Vector2.Distance(transform.position, target.position);      //내 위치와 타켓의 거리를 계산함
 
         if (dis <= targetingRange && dead == false) //  인식범위 안에 적이 들어올 시 쫒아가기 시작함
         {
@@ -91,7 +93,7 @@ public class ShortEnemy : LivingEntity
         if (!isMoving && dead == false)
         {
             isMoving = true;
-            EnemyAnimator.SetBool("Run", true); // 이동 애니메이션 재생
+            EnemyAnimator.SetBool("Fly", true); // 이동 애니메이션 재생
             return;
         }
         float dirx = target.position.x - transform.position.x;      // 
@@ -106,7 +108,7 @@ public class ShortEnemy : LivingEntity
         if (isMoving && dead == false)
         {
             isMoving = false;
-            EnemyAnimator.SetBool("Run", false); // 이동 애니메이션 멈춤
+            EnemyAnimator.SetBool("Fly", false); // 이동 애니메이션 멈춤
         }
     }
     void LateUpdate()
@@ -120,20 +122,15 @@ public class ShortEnemy : LivingEntity
         {
             isAttack = true;
             rigid.velocity = Vector2.zero;
-            Vector2 attackOffset = new Vector2(-0.5f, 0.0f);
-            Vector2 attackSize = new Vector2(0.6f, 0.3f);
-            //좌측 공격시 그에 맞게 공격범위를 좌측으로 이동시킴
-            Vector2 attackCenter = (Vector2)transform.position + (spriter.flipX ? new Vector2(-attackOffset.x, attackOffset.y) : attackOffset);
-            // 공격 범위 내의 플레이어 감지
-            Collider2D[] hitEnemies = Physics2D.OverlapBoxAll(attackCenter, attackSize, 0f, playerLayers);
             StartCoroutine(PerformAttack());
+
+            // 투사체 생성 및 발사
+            GameObject projectile = Instantiate(FlyprojectilePrefab, transform.position, Quaternion.identity);
+            Projectile projectileScript = projectile.GetComponent<Projectile>();
+            projectileScript.Launch(target.position); // 타겟의 정보를 발사체에게 넘김
 
             isAttack = false;
             EnemyAnimator.SetTrigger("Attack");
-            foreach (Collider2D Player in hitEnemies)
-            {
-                Player.GetComponent<PlayerController>().OnDamage(AttackDamage);  // 타겟이 데미지를 받는 메서드를 호출
-            }
         }
     }
     private void OnDrawGizmosSelected()
@@ -143,11 +140,10 @@ public class ShortEnemy : LivingEntity
             spriter = GetComponent<SpriteRenderer>();
         }
         //화면에 범위 표현
-        Vector2 attackOffset = new Vector2(-0.5f, 0.0f);
-        Vector2 attackSize = new Vector2(0.6f, 0.3f);
+        Vector2 attackOffset = new Vector2(0.0f, 0.0f);
         Vector2 attackCenter = (Vector2)transform.position + (spriter.flipX ? new Vector2(-attackOffset.x, attackOffset.y) : attackOffset);
 
-        Gizmos.DrawWireCube(attackCenter, attackSize);
+        Gizmos.DrawWireSphere(attackCenter, attackRange);
     }
     IEnumerator PerformAttack()
     {
@@ -162,6 +158,10 @@ public class ShortEnemy : LivingEntity
         if (health > 0 && dead == false)
         {
             StartCoroutine(HitAnimation()); // 맞는 애니메이션 재생
+            HpSilder.GetComponent<MonsterhealthSlider>().curHP = health;
+            GameObject text = Instantiate(DamageText);
+            text.transform.position = textpro.position;
+            text.GetComponent<DamageText>().damage = damage;
         }
         else // 체력이 0 이하이면 죽음 처리
         {

@@ -6,6 +6,13 @@ using static UnityEngine.GraphicsBuffer;
 public class BOSS : LivingEntity
 {
     public Rigidbody2D target;
+    public GameObject DamageText;
+    public Transform textpro;
+    public GameObject HpSilder;
+    public GameObject SpikePrefab;
+
+    public float SpikeSpeed = 5.0f; // 스파이크 속도
+    public Transform SpikeSpawnPoint; // 스파이크가 발사될 위치
 
     Rigidbody2D rigid;
     Collider2D Collider2D;
@@ -19,24 +26,29 @@ public class BOSS : LivingEntity
     private bool isWaitingForAction = false;
 
     public LayerMask playerLayers;
-    public float AttackDamage = 10f;
-    public float Speed = 1.0f;
-    public float attackDelay;
-    public float attackCooldown;
-    public float targetingRange = 10f;
+    public float RollDamage = 10f;
+    public float RoarDamage = 5f;
+    public float Speed = 1.5f;
+    public float targetingRange = 50f;
     public float attackRange = 6f;
-    public float Maxhealth;
+    public float Maxhealth = 100f;
     public float nextDamageTime = 0f;
     public float damageInterval = 0.5f; // 데미지를 주는 간격 (초 단위)
 
-
     void Start()
     {
+        GameObject player = GameObject.Find("Player");
+        if (player != null)
+        {
+            target = player.GetComponent<Rigidbody2D>();
+        }
         rigid = GetComponent<Rigidbody2D>();
         Collider2D = GetComponent<Collider2D>();
         spriter = GetComponent<SpriteRenderer>();
         EnemyAnimator = GetComponent<Animator>();
         wait = new WaitForFixedUpdate();
+        health = Maxhealth;
+        Armour = 0f;
     }
     void FixedUpdate()
     {
@@ -98,92 +110,86 @@ public class BOSS : LivingEntity
         StopMoving();
         isWaitingForAction = true;
 
-        // 랜덤으로 함수 A, B, 또는 C 중 하나를 선택하여 실행
-        int randomChoice = Random.Range(0, 0);
+        // 랜덤으로 함수를 실행하여 공격을 실행함
+        int randomChoice = Random.Range(0, 3);
         switch (randomChoice)
         {
             case 0:
-                //yield return StartCoroutine(RollAttack());
                 StartCoroutine(Roll());
                 break;
             case 1:
-                B();
+                StartCoroutine(Roar());
                 break;
             case 2:
-                C();
+                StartCoroutine(Spike());
                 break;
         }
         // 5초 동안 대기한 후 다른 행동을 허용함
-        yield return new WaitForSeconds(8.0f);
+        yield return new WaitForSeconds(7.0f);
         print("5초 대기");
         isWaitingForAction = false;
     }
-    IEnumerator Roll()
+    IEnumerator Roll()  //roll공격 함수
     {
         isAttack = true;
         print("A 실행");
         EnemyAnimator.SetTrigger("RollAttackAnticipation");
-        print("1번");
         
-        //yield return StartCoroutine(WaitForAnimation("RollAttackAnticipation"));
-        yield return new WaitForSeconds(2.06f);
+        yield return new WaitForSeconds(2.06f); //애니메이션 길이 만큼 대기
         EnemyAnimator.ResetTrigger("RollAttackAnticipation");
 
-        EnemyAnimator.SetTrigger("RollAttack"); //RollAttack
-        float RollAttackEndTime = Time.time + 3.0f;
+        EnemyAnimator.SetTrigger("RollAttack"); 
+        float RollAttackEndTime = Time.time + 3.0f; //time에 3초를 추가하여 RollAttackEndTimㄷ에 저장
         isRolling = true;
         nextDamageTime = Time.time;
-        while (Time.time < RollAttackEndTime)
+        while (Time.time < RollAttackEndTime)      //RollAttackEndTime에 저장된 시간보다 현재 시간이 커질때까지 반복
         {
-            Speed = 3.0f;
+            Speed = 3.5f;
             EnemyAnimator.SetTrigger("RollAttack");
             float dirx = target.position.x - transform.position.x;
             float diry = target.position.y - transform.position.y;
             dirx = (dirx < 0) ? -1 : 1;                 //방향조절 dir의 x거리가 -라면 -1,아니면 1 + 속도 조절
             diry = (diry < 0) ? -1 : 1;
             transform.Translate(new Vector2(dirx, diry) * Speed * Time.deltaTime);
-            print("2번");
             yield return null; // 다음 프레임까지 대기
         }
         isRolling = false;
         EnemyAnimator.ResetTrigger("RollAttack");
+
         EnemyAnimator.SetTrigger("RollAttackRecoil");
-        print("3번");
         yield return new WaitForSeconds(0.1f);
         EnemyAnimator.ResetTrigger("RollAttackRecoil");
-        Speed = 1.0f;
+        Speed = 1.5f;
         isAttack = false;
         yield return true;
     }
-    void OnCollisionEnter2D(Collision2D collision)
-    {
+    void OnCollisionEnter2D(Collision2D collision) // OnCollisionEnter2D와 OnCollisionExit2D는 충돌했을시 멈추고 떨어졌을시 다시 움직이도록 설계하였으나 실행 안됨
+    { 
         if (isRolling && collision.gameObject.CompareTag("Player"))
         {
-            print("부딪힘");
             rigid.velocity = Vector2.zero;
         }
     }
     void OnCollisionStay2D(Collision2D collision)
     {
-        if (isRolling && collision.gameObject.CompareTag("Player"))
+        if (isRolling && collision.gameObject.CompareTag("Player"))     //지금 Rolling 이고 player랑만 충돌검사 실시
         {
-            if (Time.time >= nextDamageTime)
+            if (Time.time >= nextDamageTime) //nextDamageTime 이라는 공격 딜레이를 주어 데미지 검사 실시
             {
                 PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
                 if (playerController != null)
                 {
                     rigid.velocity = Vector2.zero;
-                    playerController.GetComponent<PlayerController>().OnDamage(AttackDamage);  // 타겟이 데미지를 받는 메서드를 호출
-                    nextDamageTime = Time.time + damageInterval;
+                    playerController.GetComponent<PlayerController>().OnDamage(RollDamage);  // 타겟이 데미지를 받는 메서드를 호출
+                    nextDamageTime = Time.time + damageInterval; //damageInterval값과 time을 더하여 현재시간과 0.5초의 시간을 더한 값을 nextDamageTime에 저장하여 0.5초가 지난후에 다시 if문을 호줄하여 데미지를 주기위한 계산 식
                 }
             }
         }
     }
-    void OnCollisionExit2D(Collision2D collision)
+    void OnCollisionExit2D(Collision2D collision) 
     {
         if (isRolling &&  collision.gameObject.CompareTag("Player"))
         {
-            print("떨어짐");
             float dirx = target.position.x - transform.position.x;
             float diry = target.position.y - transform.position.y;
             dirx = (dirx < 0) ? -1 : 1;
@@ -191,13 +197,95 @@ public class BOSS : LivingEntity
             rigid.velocity = new Vector2(dirx, diry) * Speed * Time.deltaTime;
         }
     }
-    void B()
+    IEnumerator Roar()      //roar공격
     {
         print("B 실행");
+        isAttack = true;
+        EnemyAnimator.SetTrigger("RoarAnticipation");
+        yield return new WaitForSeconds(1.1f);
+        EnemyAnimator.ResetTrigger("RoarAnticipation");
+
+        float RoarAttackEndTime = Time.time + 2.0f;
+        nextDamageTime = Time.time;
+        while (Time.time < RoarAttackEndTime)       //Roar공격은 2초동안 반복
+        {
+            EnemyAnimator.SetTrigger("Roar");
+            Vector2 attackOffset = new Vector2(0.0f, 0.0f);
+            float attackRange = 4.0f;
+            Vector2 attackCenter = (Vector2)transform.position + (spriter.flipX ? new Vector2(-attackOffset.x, attackOffset.y) : attackOffset);
+            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackCenter, attackRange, playerLayers);
+            foreach (Collider2D Player in hitEnemies)
+            {
+                if (Time.time >= nextDamageTime)
+                {
+                    Player.GetComponent<PlayerController>().OnDamage(RoarDamage);  // 타겟이 데미지를 받는 메서드를 호출
+                    nextDamageTime = Time.time + 0.2f;
+                }
+            }
+            yield return null; // 다음 프레임까지 대기
+        }
+        EnemyAnimator.ResetTrigger("Roar");
+
+        EnemyAnimator.SetTrigger("RoarRecoil");
+        yield return new WaitForSeconds(1.0f);
+        EnemyAnimator.ResetTrigger("RoarRecoil");
+        isAttack = false;
+        yield return true;
     }
-    void C()
+    private void OnDrawGizmosSelected()
+    {
+        if (spriter == null)
+        {
+            spriter = GetComponent<SpriteRenderer>();
+        }
+        //화면에 범위 표현
+        Vector2 attackOffset = new Vector2(0.0f, 0.0f);
+        float attackRange = 4.0f;
+        Vector2 attackCenter = (Vector2)transform.position + (spriter.flipX ? new Vector2(-attackOffset.x, attackOffset.y) : attackOffset);
+
+        Gizmos.DrawWireSphere(attackCenter, attackRange);
+    }
+    IEnumerator Spike()
     {
         print("C 실행");
+        isAttack = true;
+        EnemyAnimator.SetTrigger("SpikeAttackAnticipation");
+        yield return new WaitForSeconds(0.8f);
+        EnemyAnimator.ResetTrigger("SpikeAttackAnticipation");
+
+        EnemyAnimator.SetTrigger("SpikeAttack");
+        FireSpikes();
+        yield return new WaitForSeconds(0.3f);
+        EnemyAnimator.ResetTrigger("SpikeAttack");
+        
+        EnemyAnimator.SetTrigger("SpikeAttackRecoil");
+        yield return new WaitForSeconds(0.9f);
+        EnemyAnimator.ResetTrigger("SpikeAttackRecoil");
+        isAttack = false;
+        yield return true;
+    }
+    private void FireSpikes()
+    {
+        int numSpikes = 20; // 발사할 스파이크 수
+        float angleStep = 360f / numSpikes; // 각 스파이크 간의 각도
+        float angle = 0f;
+
+        for (int i = 0; i < numSpikes; i++)
+        {
+            float dirX = Mathf.Sin((angle * Mathf.PI) / 180f);
+            float dirY = Mathf.Cos((angle * Mathf.PI) / 180f);
+
+            Vector2 dir = new Vector2(dirX, dirY).normalized;
+
+            GameObject spike = Instantiate(SpikePrefab, SpikeSpawnPoint.position, Quaternion.identity);
+            SpikeProjectile spikeProjectile = spike.GetComponent<SpikeProjectile>();
+            if (spikeProjectile != null)
+            {
+                spikeProjectile.SetMoveDirection(dir); // 방향 설정
+            }
+
+            angle += angleStep;
+        }
     }
     public override void OnDamage(float damage)
     {
@@ -209,6 +297,10 @@ public class BOSS : LivingEntity
         if (health > 0 && !dead)
         {
             StartCoroutine(HitAnimation()); // 맞는 애니메이션 재생
+            HpSilder.GetComponent<MonsterhealthSlider>().curHP = health;
+            GameObject text = Instantiate(DamageText);
+            text.transform.position = textpro.position;
+            text.GetComponent<DamageText>().damage = damage;
         }
         else // 체력이 0 이하이면 죽음 처리
         {

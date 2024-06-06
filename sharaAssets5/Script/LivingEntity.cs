@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class LivingEntity : MonoBehaviour, IDamageable
 {
-    public float startingHealth = 100f;
-    public float StartingArmour = 0.0f;
+    //public float startingHealth = 100f;
+    //public float StartingArmour = 0.0f;
     public float health { get; protected set; } // 현재 체력
     public float Armour { get; protected set; } // 현재 방어력
     public bool dead { get; protected set; } // 사망 상태
@@ -15,8 +15,8 @@ public class LivingEntity : MonoBehaviour, IDamageable
         // 사망하지 않은 상태로 시작
         dead = false;
         // 체력을 시작 체력으로 초기화
-        health = startingHealth;
-       Armour = StartingArmour;
+        //health = startingHealth;
+        //Armour = StartingArmour;
     }
     public virtual void OnDamage(float damage)
     {

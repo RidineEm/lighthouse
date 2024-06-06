@@ -24,12 +24,12 @@ public class Projectile : MonoBehaviour
         if (direction.x < 0)
         {
             // 왼쪽을 향하는 경우
-            transform.localScale = new Vector3(-1, 1, 1);
+            transform.localScale = new Vector2(-1, 1);
         }
         else
         {
             // 오른쪽을 향하는 경우
-            transform.localScale = new Vector3(1, 1, 1);
+            transform.localScale = new Vector2(1, 1);
         }
     }
     void Update()

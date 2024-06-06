@@ -8,24 +8,25 @@ public class PlayerController : LivingEntity
     private Rigidbody2D PlayerRigidbody;
     private Animator playerAnimator;
     private SpriteRenderer spriter;
-    Collider2D Collider2D;
     public float speed = 5f;
+
+    public GameObject DamageText;
+    public Transform textpro;
 
     private bool isAttack = false;
     private bool isWalk = false;
 
     // 공격 범위와 데미지 체력
+    public float MaxHealth = 100f;
     public float attackDamage = 10f;
     public LayerMask enemyLayers;
-    public float PlayerArmour = 0f;
 
     void Start()
     {
         PlayerRigidbody = GetComponent<Rigidbody2D>();
         playerAnimator = GetComponent<Animator>();
         spriter = GetComponent<SpriteRenderer>();
-        Collider2D = GetComponent<Collider2D>();
-        health = 100f;
+        health = MaxHealth;
         Armour = 0f;
     }
     protected override void OnEnable()
@@ -144,6 +145,9 @@ public class PlayerController : LivingEntity
         if (health > 0 && dead == false)
         {// 맞는 애니메이션 재생
             print("플레이어가 공격 받음");
+            GameObject text = Instantiate(DamageText);
+            text.transform.position = textpro.position;
+            text.GetComponent<DamageText>().damage = (int)damage;
         }
         else
         {
